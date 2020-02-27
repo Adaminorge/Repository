@@ -6,24 +6,28 @@ namespace App\Controller;
 
 use App\Entity\Raport;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class RaportController extends AbstractController
 {
-    public function indexRaport()
+    /**
+     * @Route("/", name="raport_index")
+     * @return Response
+     */
+
+    public function raportIndexControll()
     {
         $entityManager=$this->getDoctrine()->getManager();
         $raports=$entityManager->getRepository(Raport::class)->findAll();
 
-        return $this->render("Raport/index",["Raports"=>$raports]);
+
+        return $this->render("templates/raport_index.html.twig",["raports"=>$raports]);
 
 
     }
 
-    public function detailsRaport($id)
-    {
-        return $this->render("Graphen/details.html.twig");
 
-    }
 
 
 

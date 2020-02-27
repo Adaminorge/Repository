@@ -1,0 +1,12 @@
+{% extends templates/base.html.twig %}
+{%  block body %}
+
+    <h1>Graff Liste:</h1>
+
+    {% for raport in raports %}
+
+    <h3>{{ raport.id }} </h3>
+    <p>{{ raport.title }}</p>
+
+    {% endfor %}
+{% endblock %}
