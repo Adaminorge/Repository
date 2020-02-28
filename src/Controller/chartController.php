@@ -13,7 +13,7 @@ class chartController extends AbstractController
 {
     /**
      * @return Response
-     * @Route("/createChart", name="create_chart")
+     * @Route(path="/createChart", name="create_chart")
      */
     public function createChart():Response
     {
@@ -58,7 +58,7 @@ class chartController extends AbstractController
 
     /**
      * @param $id
-     * @Route("/editChart/{id}", name="edit_chart")
+     * @Route(path="/editChart/{id}", name="edit_chart")
      */
     public function editChart($id)
     {
@@ -77,4 +77,44 @@ class chartController extends AbstractController
 
         return $this->redirectToRoute('show_chart',['id'=>$chart->getId()]);
     }
+
+
+    /**
+     * @param $id
+     * @Route(path="/delete/{id}", name="delete_chart")
+     */
+    public function deleteChart($id)
+    {
+        $entityManager=$this->getDoctrine()->getManager();
+        $chart=$entityManager->getRepository(Chart::class)->find($id);
+
+        if (!$chart){
+            throw $this->createNotFoundException('Ikke funnet chart med Id:'.$id);
+
+        }
+
+        $entityManager->remove($chart);
+        $entityManager->flush();
+
+        return $this->redirect("/showall");
+    }
+
+
+    /**
+     * @Route(path="/showall", name="show_all")
+     */
+    public function allCharts()
+    {
+        $entityManager=$this->getDoctrine()->getManager();
+        $charts=$entityManager->getRepository(Chart::class)->findAll();
+
+        if(!$charts){
+            throw $this->createNotFoundException('Det er tomt!');
+        }
+
+        return $this->render("templates/show_all.html.twig",["charts"=>$charts]);
+
+    }
+
+
 }

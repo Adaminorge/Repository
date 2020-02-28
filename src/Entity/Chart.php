@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -61,6 +63,21 @@ class Chart
      */
     private $legendPos;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Data", mappedBy="chart")
+     */
+    private $data;
+
+    public function __construct()
+    {
+
+
+
+
+
+        $this->data = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -71,7 +88,7 @@ class Chart
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle(string $title=""): self
     {
         $this->title = $title;
 
@@ -177,5 +194,36 @@ class Chart
     {
         $today=date('Y.m.d');
         $this->date = $today;
+    }
+
+    /**
+     * @return Collection|Data[]
+     */
+    public function getData(): Collection
+    {
+        return $this->data;
+    }
+
+    public function addData(Data $data): self //-----------------------
+    {
+        if (!$this->data->contains($data)) {
+            $this->data[] = $data;
+            $data->setChart($this);
+        }
+
+        return $this;
+    }
+
+    public function removeData(Data $data): self
+    {
+        if ($this->data->contains($data)) {
+            $this->data->removeElement($data);
+            // set the owning side to null (unless already changed)
+            if ($data->getChart() === $this) {
+                $data->setChart(null);
+            }
+        }
+
+        return $this;
     }
 }
