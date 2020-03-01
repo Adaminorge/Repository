@@ -18,26 +18,60 @@ class importController extends AbstractController
 
     /**
      *
-     * @Route(path="/import", name="import_file")
+     * @Route(path="/open", name="open_file", methods="GET")
      */
-    public function importFile(Request $request)
+    public function openFile ()
     {
-        if ('POST'===$request->getMethod()&& 'POST'!= null){
 
-            var_dump('plik');
 
-        }else
+
+
+
+ /*       $the_big_array = [];
+        $wiersz = [];
+
+        if (($h = fopen('$plik',"r")) !== FALSE)
+        {
+
+            while (($wiersz = fgetcsv($h, 1000, ';'))!== FALSE)
             {
-            echo 'brak danych';
-
+                $the_big_array[] = str_replace('""', "", $wiersz);
             }
 
-        return $this->render('/templates/open_file.html.twig');
+
+            fclose($h);
+        }
+
+        print_r($the_big_array);
+*/
+
+        //return $this->render('/templates/open_file.html.twig');
+        return $this->redirectToRoute('import_pliku');
 
     }
 
 
+
+    /**
+    * @Route(path="/plik", name="import_pliku", methods="POST")
+    */
+    public function plikController()
+    {
+    var_dump($_FILES);
+
+
+    return $this->render('/templates/open_file.html.twig');
+
+        $p=$_POST['pliczek'];
+
+        echo '<br><br><br><br>';
+        print_r($_POST['pliczek']);
+        print_r($p);
+
+
+    }
 }
+
 /*
     }
         if (!isset($_POST['Wybierz'])) {
