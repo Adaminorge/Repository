@@ -5,8 +5,8 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
 
 /**
  * Class importController
@@ -18,55 +18,92 @@ class importController extends AbstractController
 
     /**
      *
-     * @Route(path="/open", name="open_file", methods="GET")
+     * @Route(path="/open",methods={"GET"})
      */
-    public function openFile ()
+    public function openFileController ()
     {
 
 
+        return $this->render('/templates/open_file.html.twig');
 
-
-
- /*       $the_big_array = [];
-        $wiersz = [];
-
-        if (($h = fopen('$plik',"r")) !== FALSE)
-        {
-
-            while (($wiersz = fgetcsv($h, 1000, ';'))!== FALSE)
-            {
-                $the_big_array[] = str_replace('""', "", $wiersz);
-            }
-
-
-            fclose($h);
-        }
-
-        print_r($the_big_array);
-*/
-
-        //return $this->render('/templates/open_file.html.twig');
-        return $this->redirectToRoute('import_pliku');
 
     }
 
 
 
     /**
-    * @Route(path="/plik", name="import_pliku", methods="POST")
+    *  @Route(path="/open", methods={"POST"})
     */
-    public function plikController()
+    public function uploadFileController(Request $request)
     {
-    var_dump($_FILES);
+        $filename = $request->files->get('plik');
+
+        if(isset($_FILES['plik'])){
+            $errors= array();
+            $file_name = $_FILES['plik']['name'];
+            $file_size =$_FILES['plik']['size'];
+            $file_tmp =$_FILES['plik']['tmp_name'];
+            $file_type=$_FILES['plik']['type'];
+
+            $tmp = explode('.',$_FILES['plik']['name']);
+            $file_ext=strtolower(end($tmp));
+
+            $extensions= array("csv","txt");
+
+            if(in_array($file_ext,$extensions)=== false){
+                $errors[]="extension not allowed, please choose a CSV or TXT file.";
+            }
+
+            if($file_size >20480){
+                $errors[]='File size must be max 20 kB';
+            }
+
+            if(empty($errors)==true){
+
+                //
+                //
+                //
+                //
 
 
-    return $this->render('/templates/open_file.html.twig');
+                $the_big_array = [];
+                $wiersz = [];
 
-        $p=$_POST['pliczek'];
+                if (($h = fopen("{$filename}","r")) !== FALSE)
+                {
 
-        echo '<br><br><br><br>';
-        print_r($_POST['pliczek']);
-        print_r($p);
+                    while (($wiersz = fgetcsv($h, 5000, ';'))!== FALSE)
+                    {
+                        $the_big_array[] = str_replace('""', "", $wiersz);
+                    }
+
+                    fclose($h);
+
+                    print_r($the_big_array);
+                }
+
+                //
+                //
+                //
+                //
+
+                echo "Success";
+            }else{
+                print_r($errors);
+            }
+        }
+
+
+
+
+
+
+
+
+
+        return $this->render('/templates/open_file.html.twig');
+
+
 
 
     }

@@ -19,7 +19,7 @@ class Chart
     private $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="datetime")
      */
     private $date;
 
