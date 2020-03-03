@@ -2,9 +2,12 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ChartRepository")
@@ -192,7 +195,7 @@ class Chart
      */
     public function setDate(): void
     {
-        $today=date('Y.m.d');
+        $today=new DateTime();
         $this->date = $today;
     }
 

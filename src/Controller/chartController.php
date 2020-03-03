@@ -5,7 +5,10 @@ namespace App\Controller;
 
 
 use App\Entity\Chart;
+use App\Entity\Data;
+use App\Type\ChartType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -15,25 +18,31 @@ class chartController extends AbstractController
      * @return Response
      * @Route(path="/createChart", name="create_chart")
      */
-    public function createChart():Response
+    public function createChart(Request $request)
     {
-        $entityManager=$this->getDoctrine()->getManager();
-
         $chart=new Chart();
         $chart->setDate();
-        $chart->setTitle('Diagram nr 1');
-        $chart->setDisplay(true);
-        $chart->setLegend(true);
-        $chart->setLegendPos('top');
-        $chart->setFontSize(18);
-        $chart->setFontColor('red');
-        $chart->setBorderWidth(1);
 
-        $entityManager->persist($chart);
+        $form=$this->createForm(ChartType::class, $chart);
 
-        $entityManager->flush();
 
-        return new Response('New chart!'.$chart->getTitle());
+        if ($request->isMethod("post")) {
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $form->handleRequest($request);
+            $chart=$form->getData();
+
+
+            $entityManager->persist($chart);
+            $entityManager->flush();
+        return $this->redirectToRoute("show_all");
+        }
+
+        return $this->render("templates/addChart.html.twig", ["form"=>$form->createView()]);
+
+
+
+        //return new Response('New chart!'.$chart->getTitle());
 
     }
 
