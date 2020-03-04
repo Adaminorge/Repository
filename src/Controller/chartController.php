@@ -22,6 +22,18 @@ class chartController extends AbstractController
     {
         $chart=new Chart();
         $chart->setDate();
+/*
+        $defaults[] = ['data'=>[
+            'title' => 'Helt ny diagram',
+            'display'=>1,
+            'position'=>'top',
+            'fontSize'=>18,
+            'fontColor'=>'black',
+            'borderWidth'=>1,
+            'legend'=>1,
+            'legendPos'=>'right'
+        ]];*/
+
 
         $form=$this->createForm(ChartType::class, $chart);
 
@@ -30,6 +42,7 @@ class chartController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
 
             $form->handleRequest($request);
+
             $chart=$form->getData();
 
 
@@ -42,7 +55,7 @@ class chartController extends AbstractController
 
 
 
-        //return new Response('New chart!'.$chart->getTitle());
+
 
     }
 
@@ -53,38 +66,57 @@ class chartController extends AbstractController
      */
     public function showChart($id)
     {
-        $chart=$this->getDoctrine()
-            ->getRepository(Chart::class)
-            ->find($id);
+        $chart=$this->getDoctrine()->getRepository(Chart::class)->findOneBy(["id"=>$id]);
 
         if(!$chart){
 
             throw $this->createNotFoundException('Ikke funnet!'.$id);
         }
 
-        return new Response('Chart '.$chart->getTitle());
+        return $this->render("/templates/showChart.html.twig",["chart"=>$chart]);
     }
 
     /**
      * @param $id
      * @Route(path="/editChart/{id}", name="edit_chart")
      */
-    public function editChart($id)
+    public function editChart(Request $request,$id)
     {
+
+
         $entityManager=$this->getDoctrine()->getManager();
 
         $chart=$entityManager->getRepository(Chart::class)->find($id);
 
+        $form=$this->createForm(ChartType::class, $chart);
+
+
+
+
+
+
+
         if (!$chart)
             {
-                throw $this->createNotFoundException('Det er ikke diagram med id: '.$id);
+                throw $this->createNotFoundException('Det er ikke chart med id: '.$id);
             }
 
-        $chart->setTitle('Ny titel');
 
+
+
+        $chart=$form->getData();
+
+
+        $this->render("templates/addChart.html.twig", ["form"=>$form->createView(),'id'=>$chart->getId()]);
+        $form->handleRequest($request);
+
+
+
+        $entityManager->persist($chart);
         $entityManager->flush();
 
-        return $this->redirectToRoute('show_chart',['id'=>$chart->getId()]);
+        //return $this->redirectToRoute('show_chart',['id'=>$chart->getId()]);
+        return $this->render("templates/addChart.html.twig", ["form"=>$form->createView(),'id'=>$chart->getId()]);
     }
 
 

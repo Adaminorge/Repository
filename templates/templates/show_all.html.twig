@@ -5,7 +5,10 @@
 
     {% for chart in charts %}
 
-        <h3>{{ chart.id }} {{ chart.title }}</h3>
+        <h3><a href="{{ url("show_chart",{"id":chart.id}) }}">{{ chart.id }} {{ chart.title }}</a></h3>
 
     {% endfor %}
+
+    <p><p><a href="{{ url("create_chart") }}">Create New</a></p></p>
+
 {% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html.twig" %}
+{% block body %}
+<h1>{{ chart.title }}</h1>
+
+
+    <p><a href="{{ url("app_import_openfilecontroller") }}">Import data</a></p>
+    <p><a href="{{ url("edit_chart",{"id":chart.id}) }}">Settings</a></p>
+    <p><a href="{{ url("delete_chart",{"id":chart.id}) }}">Delete</a></p>
+    <p><a href="{{ url("show_all") }}">Tilbake</a></p>
+
+{% endblock %}

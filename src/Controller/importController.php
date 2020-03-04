@@ -3,6 +3,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Chart;
+use App\Entity\Data;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -60,27 +62,19 @@ class importController extends AbstractController
 
             if(empty($errors)==true){
 
+                //IMPORT
                 //
                 //
                 //
                 //
+                //
+                //
+            $chart=new Chart();
 
 
-                $the_big_array = [];
-                $wiersz = [];
 
-                if (($h = fopen("{$filename}","r")) !== FALSE)
-                {
 
-                    while (($wiersz = fgetcsv($h, 5000, ';'))!== FALSE)
-                    {
-                        $the_big_array[] = str_replace('""', "", $wiersz);
-                    }
 
-                    fclose($h);
-
-                    print_r($the_big_array);
-                }
 
                 //
                 //
@@ -109,51 +103,3 @@ class importController extends AbstractController
     }
 }
 
-/*
-    }
-        if (!isset($_POST['Wybierz'])) {
-
-            if (empty($_POST['plik'])) {
-                */?><!--
-                <div>
-                        <h2>Velg en fil<h2>
-                        <form action="form.php" method="post">
-                        <input type=submit value="<---Tilbake">
-                </div>
-
-                --><?php
-/*
-            } else {
-
-
-                $plik=$_POST['plik'];
-
-                echo '<br><br><br><br>';
-                print_r($_POST);
-                print_r($plik);
-
-
-
-//---------------------------------------------------------------------------
-
-
-                $filename = $plik;
-
-                $the_big_array = [];
-                $wiersz = [];
-
-                if (($h = fopen("{$filename}","r")) !== FALSE)
-                {
-
-                    while (($wiersz = fgetcsv($h, 1000, ';'))!== FALSE)
-                    {
-                        $the_big_array[] = str_replace('""', "", $wiersz);
-                    }
-
-
-                    fclose($h);
-                }
-
-
-
-     }       }*/
