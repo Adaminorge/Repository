@@ -1,14 +1,15 @@
 {% extends "base.html.twig" %}
 {%  block body %}
 
-    <h1>Graff Liste:</h1>
-
+    <div class="col-4"
+    <ul class="list-group">
+        <li class="list-group-item active"><h4>Graff Liste</h4></li>
     {% for chart in charts %}
-
-        <h3><a href="{{ url("show_chart",{"id":chart.id}) }}">{{ chart.id }} {{ chart.title }}</a></h3>
+        <li class="list-group-item"> <a href="{{ url("show_chart",{"id":chart.id}) }}">{{ chart.id }} {{ chart.title }}</a></li>
 
     {% endfor %}
+    </ul>
+    </div>
 
-    <p><p><a href="{{ url("create_chart") }}">Create New</a></p></p>
 
 {% endblock %}
