@@ -7,6 +7,7 @@ use App\Entity\Chart;
 use App\Entity\Data;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -20,13 +21,13 @@ class importController extends AbstractController
 
     /**
      *
-     * @Route(path="/open",methods={"GET"})
+     * @Route(path="/open/{id}", name="wczytaj_GET", methods={"GET"})
      */
-    public function openFileController ()
+    public function openFileController ($id)
     {
 
 
-        return $this->render('/templates/open_file.html.twig');
+        return $this->render('/templates/open_file.html.twig',['id'=>$id]);
 
 
     }
@@ -34,10 +35,11 @@ class importController extends AbstractController
 
 
     /**
-    *  @Route(path="/open", methods={"POST"})
+    *  @Route(path="/open", name="wczytaj_POST", methods={"POST"})
     */
     public function uploadFileController(Request $request)
     {
+        $wykresId=$_POST['wykres'];
         $filename = $request->files->get('plik');
 
         if(isset($_FILES['plik'])){
@@ -65,18 +67,41 @@ class importController extends AbstractController
                 //IMPORT
                 //
                 //
+                //sprawdzic czy sa dane dla chartID
                 //
+                $entityManager=$this->getDoctrine()->getManager();
+
+                $sprawdz=$entityManager->getRepository(Data::class)->findBy(array('chart'=>$wykresId));
+
+                if ($sprawdz){
+                    throw $this->createNotFoundException('Wykres o Id:'.$wykresId.'juz posiada zapisane dane');
+
+                    }
+
+
                 //
+                //skasowac stare dane dla chartId
                 //
-                //
-            $chart=new Chart();
+                //import
+                //---------------------------------------------------------------------------
 
 
+                $the_big_array = [];
+                $wiersz = [];
+
+                if (($h = fopen("{$filename}","r")) !== FALSE)
+                {
+
+                    while (($wiersz = fgetcsv($h, 1000, ';'))!== FALSE)
+                    {
+                        $the_big_array[] = str_replace('""', "", $wiersz);
+                    }
 
 
+                    fclose($h);
+                }
 
-
-                //
+                print_r($the_big_array);
                 //
                 //
                 //
@@ -95,7 +120,8 @@ class importController extends AbstractController
 
 
 
-        return $this->render('/templates/open_file.html.twig');
+     //   return $this->render('/templates/open_file.html.twig');
+        //return $this->redirectToRoute('show_chart',['id'=>$wykresId]);
 
 
 

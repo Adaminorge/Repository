@@ -2,10 +2,10 @@
 {% block body %}
 <h1>{{ chart.title }}</h1>
 
-    <div class="container" style="margin-top: 15px">
+    <div class="container col-12 pl-0" style="margin-top: 15px">
         <ul class="nav nav-pills">
             <li class="nav-item">
-                <a class="nav-link" href="{{ url("app_import_openfilecontroller") }}">Import data</a>
+                <a class="nav-link" href="{{ url("wczytaj_GET",{"id":chart.id}) }}">Import data</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ url("edit_chart",{"id":chart.id}) }}">Settings</a>

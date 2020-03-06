@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Chart;
 use App\Entity\Data;
 use App\Type\ChartType;
+use App\Type\NewChartType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,20 +23,17 @@ class chartController extends AbstractController
     {
         $chart=new Chart();
         $chart->setDate();
-/*
-        $defaults[] = ['data'=>[
-            'title' => 'Helt ny diagram',
-            'display'=>1,
-            'position'=>'top',
-            'fontSize'=>18,
-            'fontColor'=>'black',
-            'borderWidth'=>1,
-            'legend'=>1,
-            'legendPos'=>'right'
-        ]];*/
+        $chart->setDisplay(1);
+        $chart->setBorderWidth(1);
+        $chart->setFontSize(18);
+        $chart->setFontColor('black');
+        $chart->setLegend(1);
+        $chart->setLegendPos('right');
+        $chart->setPosition('top');
 
 
-        $form=$this->createForm(ChartType::class, $chart);
+
+        $form=$this->createForm(NewChartType::class, $chart);
 
 
         if ($request->isMethod("post")) {
@@ -48,7 +46,8 @@ class chartController extends AbstractController
 
             $entityManager->persist($chart);
             $entityManager->flush();
-        return $this->redirectToRoute("show_all");
+
+            return $this->redirectToRoute("show_all");//----------------------------------------zmienic rute na import?
         }
 
         return $this->render("templates/addChart.html.twig", ["form"=>$form->createView()]);

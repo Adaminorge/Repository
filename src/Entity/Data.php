@@ -31,6 +31,22 @@ class Data
      */
     private $menuId;
 
+    /**
+     * @return mixed
+     */
+    public function getMenuId()
+    {
+        return $this->menuId;
+    }
+
+    /**
+     * @param mixed $menuId
+     */
+    public function setMenuId($menuId): void
+    {
+        $this->menuId = $menuId;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
