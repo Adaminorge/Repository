@@ -67,16 +67,16 @@ class Chart
     private $legendPos;
 
     /**
+     * @var Data[]
      * @ORM\OneToMany(targetEntity="App\Entity\Data", mappedBy="chart")
      */
     private $data;
 
+    /**
+     * Chart constructor.
+     */
     public function __construct()
     {
-
-
-
-
 
         $this->data = new ArrayCollection();
     }
@@ -190,7 +190,9 @@ class Chart
         return $this->date;
     }
 
+
     /**
+     *
      * @param mixed $date
      */
     public function setDate(): void

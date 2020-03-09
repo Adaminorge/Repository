@@ -39,7 +39,7 @@ class importController extends AbstractController
     */
     public function uploadFileController(Request $request)
     {
-        $wykresId=$_POST['wykres'];
+        $wykresId=(int)$_POST['wykres_id'];
         $filename = $request->files->get('plik');
 
         if(isset($_FILES['plik'])){
@@ -79,29 +79,33 @@ class importController extends AbstractController
                     }
 
 
-                //
+                //----------------------------------------------------------------------------------------------------
                 //skasowac stare dane dla chartId
                 //
                 //import
                 //---------------------------------------------------------------------------
 
 
-                $the_big_array = [];
-                $wiersz = [];
-
                 if (($h = fopen("{$filename}","r")) !== FALSE)
                 {
-
-                    while (($wiersz = fgetcsv($h, 1000, ';'))!== FALSE)
+                    $marker=1;
+                    while (!feof($h))
                     {
-                        $the_big_array[] = str_replace('""', "", $wiersz);
+                       $wiersz=fgets($h);
+                       $data= new Data();
+                           $data->setChart($chart);
+                           $data->setDane($wiersz);
+                           $data->setMenuId($marker);
+                           $entityManager->persist($data);
+                           $entityManager->flush();
+                           $marker=0;
                     }
 
 
                     fclose($h);
                 }
 
-                print_r($the_big_array);
+
                 //
                 //
                 //

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -23,6 +24,8 @@ class Data
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Chart", inversedBy="data")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id")
+     *
      */
     private $chart;
 
@@ -64,14 +67,21 @@ class Data
         return $this;
     }
 
-    public function getChart(): ?Chart
+    /**
+     * @return Chart
+     */
+    public function getChart()
     {
         return $this->chart;
     }
 
-    public function setChart(?Chart $chart): self
-    {
-        $this->chart = $chart;
+    /**
+     * @param Chart $chart
+     * @return $this
+     */
+    public function setChart(Chart $chart): self //-----------------------------------------------------
+        {
+        $this->chart= $chart;
 
         return $this;
     }
