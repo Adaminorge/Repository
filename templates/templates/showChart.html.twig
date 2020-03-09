@@ -4,17 +4,17 @@
 
     <div class="container col-12 pl-0" style="margin-top: 15px">
         <ul class="nav nav-pills">
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url("wczytaj_GET",{"id":chart.id}) }}">Import data</a>
+            <li class="nav-item" style="margin-right: 10px">
+                {{form(openForm)}}
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url("edit_chart",{"id":chart.id}) }}">Settings</a>
+            <li class="nav-item" style="margin-right: 10px">
+                <a class="nav-link active" href="{{ url("edit_chart",{"id":chart.id}) }}">Settings</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url("delete_chart",{"id":chart.id}) }}">Delete</a>
+            <li class="nav-item" style="margin-right: 10px">
+               {{form(deleteForm)}}
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url("show_all") }}">Tilbake</a>
+            <li class="nav-item" style="margin-right: 10px">
+                <a class="nav-link active" href="{{ url("show_all") }}">Tilbake</a>
             </li>
 
         </ul>

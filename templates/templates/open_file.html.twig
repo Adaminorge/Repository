@@ -1,15 +1,7 @@
 {% extends "base.html.twig" %}
 {% block body %}
 <h2>Importering data til Graphene:</h2><br>
-    <form action="{{ path("wczytaj_POST") }}" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-
-            <input type="text" name="wykres_id" value={{ id }}>
-            <input type="file" name="plik" accept="text/csv,text/txt" class="form-control-file" ><br>
-            <input type=submit value="Lagre">
-
-    </form>
-
+   {{form(openForm)}}
 
 
 {% endblock %}

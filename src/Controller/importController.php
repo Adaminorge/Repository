@@ -20,26 +20,15 @@ class importController extends AbstractController
 {
 
     /**
-     *
-     * @Route(path="/open/{id}", name="wczytaj_GET", methods={"GET"})
-     */
-    public function openFileController ($id)
-    {
-
-
-        return $this->render('/templates/open_file.html.twig',['id'=>$id]);
-
-
-    }
-
-
-
-    /**
-    *  @Route(path="/open", name="wczytaj_POST", methods={"POST"})
+    *  @Route(path="/open/{id}", name="wczytaj", methods={"POST"})
+    *
     */
-    public function uploadFileController(Request $request)
+    public function uploadFileController(Request $request, Chart $chart,$id)
     {
-        $wykresId=(int)$_POST['wykres_id'];
+
+        $entityManager=$this->getDoctrine()->getManager();
+        $wykresId=$entityManager->getRepository(Chart::class)->find($id);
+
         $filename = $request->files->get('plik');
 
         if(isset($_FILES['plik'])){
@@ -69,7 +58,6 @@ class importController extends AbstractController
                 //
                 //sprawdzic czy sa dane dla chartID
                 //
-                $entityManager=$this->getDoctrine()->getManager();
 
                 $sprawdz=$entityManager->getRepository(Data::class)->findBy(array('chart'=>$wykresId));
 
@@ -86,14 +74,14 @@ class importController extends AbstractController
                 //---------------------------------------------------------------------------
 
 
-                if (($h = fopen("{$filename}","r")) !== FALSE)
+                if (($h = fopen($filename,"r")) !== FALSE)
                 {
                     $marker=1;
                     while (!feof($h))
                     {
                        $wiersz=fgets($h);
                        $data= new Data();
-                           $data->setChart($chart);
+                           $data->setChart((int)$wykresId->getId());
                            $data->setDane($wiersz);
                            $data->setMenuId($marker);
                            $entityManager->persist($data);
@@ -125,7 +113,7 @@ class importController extends AbstractController
 
 
      //   return $this->render('/templates/open_file.html.twig');
-        //return $this->redirectToRoute('show_chart',['id'=>$wykresId]);
+        return $this->redirectToRoute('show_chart',['id'=>$wykresId->getId()]);
 
 
 

@@ -8,7 +8,12 @@ use App\Entity\Chart;
 use App\Entity\Data;
 use App\Type\ChartType;
 use App\Type\NewChartType;
+use Doctrine\DBAL\Types\TextType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -71,37 +76,40 @@ class chartController extends AbstractController
 
             throw $this->createNotFoundException('Ikke funnet!'.$id);
         }
+        $deleteForm=$this->createFormBuilder()
+            ->setAction($this->generateUrl("delete_chart",["id"=>$chart->getId()]))
+            ->setMethod(Request::METHOD_DELETE)
+            ->add("submit", SubmitType::class, ["label"=>"Delete"])
+            ->getForm();
 
-        return $this->render("/templates/showChart.html.twig",["chart"=>$chart]);
+        $openForm=$this->createFormBuilder()
+            ->setAction($this->generateUrl("open_file",["id"=>$chart->getId()]))
+            ->setMethod(Request::METHOD_POST)
+            ->add("submit", SubmitType::class, ["label"=>"Import data"])
+            ->getForm();
+
+
+        return $this->render("/templates/showChart.html.twig",["chart"=>$chart,"deleteForm"=>$deleteForm->createView(),"openForm"=>$openForm->createView()]);
     }
 
     /**
      * @param $id
      * @Route(path="/editChart/{id}", name="edit_chart")
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function editChart(Request $request,$id)
     {
 
 
         $entityManager=$this->getDoctrine()->getManager();
-
         $chart=$entityManager->getRepository(Chart::class)->find($id);
 
         $form=$this->createForm(ChartType::class, $chart);
-
-
-
-
-
-
 
         if (!$chart)
             {
                 throw $this->createNotFoundException('Det er ikke chart med id: '.$id);
             }
-
-
-
 
         $chart=$form->getData();
 
@@ -115,13 +123,15 @@ class chartController extends AbstractController
         $entityManager->flush();
 
         //return $this->redirectToRoute('show_chart',['id'=>$chart->getId()]);
+
         return $this->render("templates/addChart.html.twig", ["form"=>$form->createView(),'id'=>$chart->getId()]);
     }
 
 
     /**
-     * @param $id
-     * @Route(path="/delete/{id}", name="delete_chart")
+     * @Route("/delete/{id}", name="delete_chart", methods="DELETE")
+     * @param Chart $chart
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function deleteChart($id)
     {
@@ -156,5 +166,29 @@ class chartController extends AbstractController
 
     }
 
+
+    /**
+     * @Route(path="/openfile/{id}", name="open_file", methods="POST")
+     *
+     *
+     */
+    public function openFileController($id){
+
+        $entityManager=$this->getDoctrine()->getManager();
+        $chart=$entityManager->getRepository(Chart::class)->find($id);
+
+        $openForm=$this->createFormBuilder()
+            ->setAction($this->generateUrl("wczytaj",["id"=>$chart->getId()]))
+            ->setMethod(Request::METHOD_POST)
+            ->add("plik", FileType::class)
+            ->add("submit", SubmitType::class, ["label"=>"Import data"])
+            ->getForm();
+
+
+        return $this->render("/templates/open_file.html.twig",
+            ["openForm"=>$openForm->createView()]);
+
+
+    }
 
 }
