@@ -29,7 +29,15 @@ class importController extends AbstractController
         $entityManager=$this->getDoctrine()->getManager();
         $wykresId=$entityManager->getRepository(Chart::class)->find($id);
 
-        $filename = $request->files->get('plik');
+
+        $filename = $request->files->get('form[plik]');
+
+
+
+         var_dump($filename);
+         echo('dupa');
+
+
 
         if(isset($_FILES['plik'])){
             $errors= array();
@@ -81,10 +89,11 @@ class importController extends AbstractController
                     {
                        $wiersz=fgets($h);
                        $data= new Data();
-                           $data->setChart((int)$wykresId->getId());
+                           $data->setChart($wykresId);
                            $data->setDane($wiersz);
                            $data->setMenuId($marker);
                            $entityManager->persist($data);
+                           $entityManager->presist($wykresId);
                            $entityManager->flush();
                            $marker=0;
                     }
@@ -113,7 +122,8 @@ class importController extends AbstractController
 
 
      //   return $this->render('/templates/open_file.html.twig');
-        return $this->redirectToRoute('show_chart',['id'=>$wykresId->getId()]);
+          return $this->redirectToRoute('show_chart',['id'=>$wykresId->getId()]);
+
 
 
 
