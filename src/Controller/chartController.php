@@ -77,6 +77,7 @@ class chartController extends AbstractController
 
             throw $this->createNotFoundException('Ikke funnet!'.$id);
         }
+
         $deleteForm=$this->createFormBuilder()
             ->setAction($this->generateUrl("delete_chart",["id"=>$chart->getId()]))
             ->setMethod(Request::METHOD_DELETE)
@@ -187,6 +188,8 @@ class chartController extends AbstractController
 
 
         return $this->render("/templates/open_file.html.twig",["openForm"=>$openForm->createView()]);
+
+
 
 
     }

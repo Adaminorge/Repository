@@ -24,7 +24,8 @@ class NewChartType extends AbstractType
 
 
         $formBuilder
-            ->add('title', TextType::class,)
+
+            ->add('title', TextType::class)
             ->add('Submit',SubmitType::class);
 
 

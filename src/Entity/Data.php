@@ -23,11 +23,12 @@ class Data
     private $dane;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Chart", inversedBy="data")
+     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Chart", inversedBy="id")
      * @ORM\JoinColumn(name="id", referencedColumnName="id")
      *
      */
-    private $chart;
+    private $chart_id;
 
     /**
      * @ORM\Column(type="boolean")
@@ -70,18 +71,19 @@ class Data
     /**
      * @return Chart
      */
-    public function getChart()
+    public function getChart_id()
     {
-        return $this->chart;
+        return $this->chart_id;
     }
 
     /**
+     *
      * @param Chart $chart
      * @return $this
      */
     public function setChart(Chart $chart): self //-----------------------------------------------------
         {
-        $this->chart= $chart;
+        $this->chart_id= $chart;
 
         return $this;
     }

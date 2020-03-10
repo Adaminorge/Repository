@@ -67,8 +67,8 @@ class Chart
     private $legendPos;
 
     /**
-     * @var Data[]
-     * @ORM\OneToMany(targetEntity="App\Entity\Data", mappedBy="chart")
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\Data", mappedBy="chart_id")
      */
     private $data;
 

@@ -23,57 +23,18 @@ class importController extends AbstractController
     *  @Route(path="/open/{id}", name="wczytaj", methods={"POST"})
     *
     */
-    public function uploadFileController(Request $request, Chart $chart,$id)
+    public function loadFileController(Request $request, Chart $chart,$id)
     {
 
+
+
         $entityManager=$this->getDoctrine()->getManager();
-        $wykresId=$entityManager->getRepository(Chart::class)->find($id);
+        $wykres=$entityManager->getRepository(Chart::class)->find($id);
 
+       $file = $request->files->get('form');
 
-        $filename = $request->files->get('form[plik]');
-
-
-
-         var_dump($filename);
-         echo('dupa');
-
-
-
-        if(isset($_FILES['plik'])){
-            $errors= array();
-            $file_name = $_FILES['plik']['name'];
-            $file_size =$_FILES['plik']['size'];
-            $file_tmp =$_FILES['plik']['tmp_name'];
-            $file_type=$_FILES['plik']['type'];
-
-            $tmp = explode('.',$_FILES['plik']['name']);
-            $file_ext=strtolower(end($tmp));
-
-            $extensions= array("csv","txt");
-
-            if(in_array($file_ext,$extensions)=== false){
-                $errors[]="extension not allowed, please choose a CSV or TXT file.";
-            }
-
-            if($file_size >20480){
-                $errors[]='File size must be max 20 kB';
-            }
-
-            if(empty($errors)==true){
-
-                //IMPORT
-                //
-                //
-                //sprawdzic czy sa dane dla chartID
-                //
-
-                $sprawdz=$entityManager->getRepository(Data::class)->findBy(array('chart'=>$wykresId));
-
-                if ($sprawdz){
-                    throw $this->createNotFoundException('Wykres o Id:'.$wykresId.'juz posiada zapisane dane');
-
-                    }
-
+       //echo'<pre>';
+       //var_dump($file['plik']);
 
                 //----------------------------------------------------------------------------------------------------
                 //skasowac stare dane dla chartId
@@ -82,25 +43,27 @@ class importController extends AbstractController
                 //---------------------------------------------------------------------------
 
 
-                if (($h = fopen($filename,"r")) !== FALSE)
+        if (($h = fopen($file['plik'],"r")) !== FALSE)
                 {
                     $marker=1;
+                    $doZamiany=["\n","\""];
                     while (!feof($h))
                     {
                        $wiersz=fgets($h);
                        $data= new Data();
-                           $data->setChart($wykresId);
-                           $data->setDane($wiersz);
+
+                           $data->setDane(str_replace( $doZamiany, "", $wiersz));
+                           $data->setChart($wykres);
                            $data->setMenuId($marker);
                            $entityManager->persist($data);
-                           $entityManager->presist($wykresId);
+                       //    $entityManager->persist($wykres);
                            $entityManager->flush();
                            $marker=0;
                     }
 
 
                     fclose($h);
-                }
+
 
 
                 //
@@ -109,9 +72,8 @@ class importController extends AbstractController
 
                 echo "Success";
             }else{
-                print_r($errors);
+                echo "Jakas straszna kupa!";
             }
-        }
 
 
 
@@ -121,9 +83,9 @@ class importController extends AbstractController
 
 
 
-     //   return $this->render('/templates/open_file.html.twig');
-          return $this->redirectToRoute('show_chart',['id'=>$wykresId->getId()]);
 
+        return $this->render('/templates/open_file.html.twig');
+     //     return $this->redirectToRoute('show_chart',['id'=>$wykresId->getId()]);
 
 
 
