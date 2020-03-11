@@ -33,30 +33,21 @@ class importController extends AbstractController
 
        $file = $request->files->get('form');
 
-       //echo'<pre>';
-       //var_dump($file['plik']);
-
-                //----------------------------------------------------------------------------------------------------
-                //skasowac stare dane dla chartId
-                //
-                //import
-                //---------------------------------------------------------------------------
-
 
         if (($h = fopen($file['plik'],"r")) !== FALSE)
                 {
                     $marker=1;
                     $doZamiany=["\n","\""];
-                    while (!feof($h))
+                    while (( $wiersz=fgets($h))!==false)
                     {
-                       $wiersz=fgets($h);
+
                        $data= new Data();
 
                            $data->setDane(str_replace( $doZamiany, "", $wiersz));
                            $data->setChart($wykres);
                            $data->setMenuId($marker);
                            $entityManager->persist($data);
-                       //    $entityManager->persist($wykres);
+                           $entityManager->persist($wykres);
                            $entityManager->flush();
                            $marker=0;
                     }
@@ -66,11 +57,7 @@ class importController extends AbstractController
 
 
 
-                //
-                //
-                //
 
-                echo "Success";
             }else{
                 echo "Jakas straszna kupa!";
             }
@@ -84,8 +71,8 @@ class importController extends AbstractController
 
 
 
-        return $this->render('/templates/open_file.html.twig');
-     //     return $this->redirectToRoute('show_chart',['id'=>$wykresId->getId()]);
+      //  return $this->render('/templates/open_file.html.twig');
+         return $this->redirectToRoute('show_chart',['id'=>$wykres->getId()]);
 
 
 

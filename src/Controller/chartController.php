@@ -56,7 +56,7 @@ class chartController extends AbstractController
             return $this->redirectToRoute("show_all");//----------------------------------------zmienic rute na import?
         }
 
-        return $this->render("templates/addChart.html.twig", ["form"=>$form->createView()]);
+        return $this->render("templates/editChart.html.twig", ["form"=>$form->createView()]);
 
 
 
@@ -97,7 +97,7 @@ class chartController extends AbstractController
     /**
      * @param $id
      * @Route(path="/editChart/{id}", name="edit_chart")
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return Response
      */
     public function editChart(Request $request,$id)
     {
@@ -107,26 +107,20 @@ class chartController extends AbstractController
         $chart=$entityManager->getRepository(Chart::class)->find($id);
 
         $form=$this->createForm(ChartType::class, $chart);
-
+        //$this->render("templates/editChart.html.twig", ["form"=>$form->createView(),'id'=>$chart->getId()]);
         if (!$chart)
             {
                 throw $this->createNotFoundException('Det er ikke chart med id: '.$id);
             }
 
         $chart=$form->getData();
-
-
-        $this->render("templates/addChart.html.twig", ["form"=>$form->createView(),'id'=>$chart->getId()]);
         $form->handleRequest($request);
-
-
-
         $entityManager->persist($chart);
         $entityManager->flush();
 
         //return $this->redirectToRoute('show_chart',['id'=>$chart->getId()]);
 
-        return $this->render("templates/addChart.html.twig", ["form"=>$form->createView(),'id'=>$chart->getId()]);
+        return $this->render("templates/editChart.html.twig", ["form"=>$form->createView(),'id'=>$chart->getId()]);
     }
 
 
@@ -137,12 +131,37 @@ class chartController extends AbstractController
      */
     public function deleteChart($id)
     {
+
+
         $entityManager=$this->getDoctrine()->getManager();
+
+        //
+        //----------------------ostrzezenie-------------------------
+        //
+
+
+
+        //
+        //----------------------usuwanie danych wykresu-----------------------------
+        //
+
+        $data=$entityManager->getRepository(Data::class)->findBy(array('chart_id'=>$id));
+        if ($data){
+
+        var_dump($data);
+
+        foreach ($data as $usun) {
+            $entityManager->remove($usun);
+            $entityManager->flush();
+                                }
+        }
+        //
+        //------------------------usuwanie wykresu
+        //
         $chart=$entityManager->getRepository(Chart::class)->find($id);
 
         if (!$chart){
             throw $this->createNotFoundException('Ikke funnet chart med Id:'.$id);
-
         }
 
         $entityManager->remove($chart);

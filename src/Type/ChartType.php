@@ -33,7 +33,7 @@ class ChartType extends AbstractType
             ->add('borderWidth', TextType::class,)
             ->add('legend', CheckboxType::class,)
             ->add('legendPos', ChoiceType::class,['choices'=>['right'=>true,'left'=>false,],])
-            ->add('Submit',SubmitType::class);
+            ->add('Skriv',SubmitType::class);
 
 
 

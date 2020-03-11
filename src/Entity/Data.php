@@ -24,7 +24,7 @@ class Data
 
     /**
      * @ORM\Column(type="integer")
-     * @ORM\ManyToOne(targetEntity="App\Entity\Chart", inversedBy="id")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Chart", inversedBy="data")
      * @ORM\JoinColumn(name="id", referencedColumnName="id")
      *
      */
@@ -83,7 +83,7 @@ class Data
      */
     public function setChart(Chart $chart): self //-----------------------------------------------------
         {
-        $this->chart_id= $chart;
+        $this->chart_id= $chart->getId();
 
         return $this;
     }
